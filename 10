@@ -1,0 +1,65 @@
+import java.util.Scanner;
+
+class BankTransaction extends Thread {
+    private String transactionName;
+    private double amount;
+    private boolean isHighValue;
+
+    public BankTransaction(String transactionName, double amount, boolean isHighValue) {
+        this.transactionName = transactionName;
+        this.amount = amount;
+        this.isHighValue = isHighValue;
+    }
+
+    @Override
+    public void run() {
+        if (isHighValue) {
+            System.out.println("High-value transaction processed first");
+        } else {
+            System.out.println("Low-value transaction processed later");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Transaction1: ₹");
+        double amount1 = scanner.nextDouble();
+
+        System.out.print("Transaction2: ₹");
+        double amount2 = scanner.nextDouble();
+
+        BankTransaction t1;
+        BankTransaction t2;
+
+        // Assign priorities based on transaction amounts
+        if (amount1 >= amount2) {
+            t1 = new BankTransaction("Transaction 1", amount1, true);
+            t1.setPriority(Thread.MAX_PRIORITY);
+
+            t2 = new BankTransaction("Transaction 2", amount2, false);
+            t2.setPriority(Thread.MIN_PRIORITY);
+        } else {
+            t1 = new BankTransaction("Transaction 1", amount1, false);
+            t1.setPriority(Thread.MIN_PRIORITY);
+
+            t2 = new BankTransaction("Transaction 2", amount2, true);
+            t2.setPriority(Thread.MAX_PRIORITY);
+        }
+
+        // Start threads
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            System.out.println("Transaction thread interrupted: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
