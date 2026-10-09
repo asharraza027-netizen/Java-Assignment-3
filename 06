@@ -1,0 +1,36 @@
+import java.util.Scanner;
+
+// User-defined checked exception
+class MinimumAmountException extends Exception {
+    public MinimumAmountException(String message) {
+        super(message);
+    }
+}
+
+class OnlineShopping {
+    // Method to validate cart value and place order
+    public void placeOrder(int amount) throws MinimumAmountException {
+        if (amount < 500) {
+            throw new MinimumAmountException("Minimum cart value must be ₹500");
+        }
+        System.out.println("Order placed successfully for amount: ₹" + amount);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        OnlineShopping shoppingSystem = new OnlineShopping();
+
+        System.out.print("Enter cart amount: ");
+        int amount = scanner.nextInt();
+
+        try {
+            shoppingSystem.placeOrder(amount);
+        } catch (MinimumAmountException e) {
+            System.out.println("Exception: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
