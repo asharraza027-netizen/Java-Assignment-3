@@ -1,0 +1,36 @@
+import java.util.Scanner;
+
+public class UniversityLogin {
+
+    // Method to handle user login
+    public void login(String username) {
+        // If a null value is passed, or literal "null" input simulated as null
+        if (username == null) {
+            throw new NullPointerException("Username cannot be null");
+        }
+        
+        // Alternatively, invoking a method on null directly triggers NullPointerException:
+        // username.length(); 
+
+        System.out.println("Login successful for user: " + username);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        UniversityLogin portal = new UniversityLogin();
+
+        System.out.print("Enter username: ");
+        String input = scanner.nextLine().trim();
+
+        // Convert the string literal "null" from standard input to an actual null reference
+        String username = input.equalsIgnoreCase("null") ? null : input;
+
+        try {
+            portal.login(username);
+        } catch (NullPointerException e) {
+            System.out.println("Exception: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
