@@ -1,0 +1,85 @@
+import java.util.Scanner;
+
+// Shared resource class
+class TicketBooking {
+    private int availableSeats;
+
+    public TicketBooking(int availableSeats) {
+        this.availableSeats = availableSeats;
+    }
+
+    // Synchronized method to prevent race conditions
+    public synchronized void bookSeat(String userName, int seatsRequested) {
+        if (seatsRequested <= availableSeats) {
+            availableSeats -= seatsRequested;
+            System.out.println(userName + " booked " + seatsRequested + " seat(s) successfully");
+        } else {
+            System.out.println(userName + " booking failed. Not enough seats");
+        }
+    }
+}
+
+// Thread class for User1
+class User1 extends Thread {
+    private TicketBooking bookingSystem;
+    private int seats;
+
+    public User1(TicketBooking bookingSystem, int seats) {
+        this.bookingSystem = bookingSystem;
+        this.seats = seats;
+    }
+
+    @Override
+    public void run() {
+        bookingSystem.bookSeat("User1", seats);
+    }
+}
+
+// Thread class for User2
+class User2 extends Thread {
+    private TicketBooking bookingSystem;
+    private int seats;
+
+    public User2(TicketBooking bookingSystem, int seats) {
+        this.bookingSystem = bookingSystem;
+        this.seats = seats;
+    }
+
+    @Override
+    public void run() {
+        bookingSystem.bookSeat("User2", seats);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Available Seats: ");
+        int totalSeats = scanner.nextInt();
+
+        System.out.print("User1 wants to book: ");
+        int user1Seats = scanner.nextInt();
+
+        System.out.print("User2 wants to book: ");
+        int user2Seats = scanner.nextInt();
+
+        TicketBooking bookingSystem = new TicketBooking(totalSeats);
+
+        User1 thread1 = new User1(bookingSystem, user1Seats);
+        User2 thread2 = new User2(bookingSystem, user2Seats);
+
+        // Start threads concurrently
+        thread1.start();
+        thread2.start();
+
+        try {
+            thread1.join();
+            thread2.join();
+        } catch (InterruptedException e) {
+            System.out.println("Thread execution interrupted: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
