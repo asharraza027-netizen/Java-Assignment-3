@@ -1,0 +1,56 @@
+import java.util.Scanner;
+
+// Task representing an individual print job
+class PrinterJob implements Runnable {
+    private int jobId;
+    private String studentName;
+
+    public PrinterJob(int jobId, String studentName) {
+        this.jobId = jobId;
+        this.studentName = studentName;
+    }
+
+    @Override
+    public void run() {
+        try {
+            // Simulate time taken to process the print job
+            Thread.sleep(500);
+            System.out.println("Printing job " + jobId + " by " + studentName);
+        } catch (InterruptedException e) {
+            System.out.println("Print job " + jobId + " was interrupted.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Number of print jobs: ");
+        int totalJobs = scanner.nextInt();
+
+        Thread[] threads = new Thread[totalJobs];
+
+        // Create and start a thread for each student's print job
+        for (int i = 0; i < totalJobs; i++) {
+            char studentLetter = (char) ('A' + i);
+            String studentName = "Student " + studentLetter;
+            int jobId = i + 1;
+
+            PrinterJob job = new PrinterJob(jobId, studentName);
+            threads[i] = new Thread(job);
+            threads[i].start();
+        }
+
+        // Wait for all print threads to finish execution
+        for (int i = 0; i < totalJobs; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("Main thread interrupted: " + e.getMessage());
+            }
+        }
+
+        scanner.close();
+    }
+}
