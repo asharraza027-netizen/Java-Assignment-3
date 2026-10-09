@@ -1,0 +1,48 @@
+import java.util.Scanner;
+
+// Custom exception for insufficient funds
+class InsufficientBalanceException extends Exception {
+    public InsufficientBalanceException(String message) {
+        super(message);
+    }
+}
+
+class ATM {
+    private double balance;
+
+    public ATM(double balance) {
+        this.balance = balance;
+    }
+
+    // Method to handle withdrawal
+    public void withdraw(double amount) throws InsufficientBalanceException {
+        if (amount > balance) {
+            throw new InsufficientBalanceException("Insufficient Balance");
+        }
+        balance -= amount;
+        System.out.println("Withdrawal successful! Remaining balance: " + balance);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter balance: ");
+        double balance = scanner.nextDouble();
+
+        System.out.print("Enter amount to withdraw: ");
+        double amount = scanner.nextDouble();
+
+        ATM atm = new ATM(balance);
+
+        try {
+            atm.withdraw(amount);
+        } catch (InsufficientBalanceException e) {
+            System.out.println("Exception: " + e.getMessage());
+        } finally {
+            System.out.println("Transaction Completed");
+            scanner.close();
+        }
+    }
+}
